@@ -1,6 +1,6 @@
 import { cn } from "../../../utils/utils";
 
-interface FilterPriceRangeSliderProps {
+interface TProductFilterRangeSliderProps {
   min: number;
   max: number;
   valueMin: number;
@@ -11,7 +11,7 @@ interface FilterPriceRangeSliderProps {
   label?: string;
 }
 
-export function FilterPriceRangeSlider({
+export function ProductFilterRangeSlider({
   min,
   max,
   valueMin,
@@ -20,7 +20,7 @@ export function FilterPriceRangeSlider({
   step = 1,
   formatValue = (v) => String(v),
   label,
-}: FilterPriceRangeSliderProps) {
+}: TProductFilterRangeSliderProps) {
   const pctMin = ((valueMin - min) / (max - min)) * 100;
   const pctMax = ((valueMax - min) / (max - min)) * 100;
 

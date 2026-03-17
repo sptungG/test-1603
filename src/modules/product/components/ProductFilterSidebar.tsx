@@ -1,7 +1,8 @@
-import { FilterPanel } from "./FilterPanel";
+import { cn } from "@/utils/utils";
 import type { TProductFilters } from "../product-types";
+import { ProductFilterPanel } from "./ProductFilterPanel";
 
-interface ProductFilterSidebarProps {
+interface TProductFilterSidebarProps {
   open: boolean;
   loading: boolean;
   filters: TProductFilters;
@@ -21,11 +22,9 @@ export function ProductFilterSidebar({
   filteredCount,
   onFiltersChange,
   onReset,
-}: ProductFilterSidebarProps) {
+}: TProductFilterSidebarProps) {
   return (
-    <aside
-      className={`${open ? "block" : "hidden"} sm:block w-full sm:w-64 flex-shrink-0`}
-    >
+    <aside className={cn(open ? "block" : "hidden", "sm:block w-full sm:w-64 shrink-0")}>
       <div className="bg-white rounded-xl border border-gray-100 p-5 sticky top-24">
         {loading ? (
           <div className="flex flex-col gap-4">
@@ -34,7 +33,7 @@ export function ProductFilterSidebar({
             ))}
           </div>
         ) : (
-          <FilterPanel
+          <ProductFilterPanel
             filters={filters}
             priceBounds={priceBounds}
             onChange={onFiltersChange}

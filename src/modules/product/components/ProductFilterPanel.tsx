@@ -3,9 +3,9 @@ import { Button } from "../../../components/ui/Button";
 import { cn } from "../../../utils/utils";
 import type { TProductCategory, TProductFilters } from "../product-types";
 import { CATEGORY_LABELS, PRODUCT_CATEGORIES } from "../product-types";
-import { FilterPriceRangeSlider } from "./FilterRangeSlider";
+import { ProductFilterRangeSlider } from "./ProductFilterRangeSlider";
 
-interface FilterPanelProps {
+interface TProductFilterPanelProps {
   filters: TProductFilters;
   /** Actual min/max prices derived from loaded product data */
   priceBounds: { min: number; max: number };
@@ -15,7 +15,14 @@ interface FilterPanelProps {
   filteredCount: number;
 }
 
-export const FilterPanel = memo(function FilterPanel({ filters, priceBounds, onChange, onReset, totalCount, filteredCount }: FilterPanelProps) {
+export const ProductFilterPanel = memo(function ProductFilterPanel({
+  filters,
+  priceBounds,
+  onChange,
+  onReset,
+  totalCount,
+  filteredCount,
+}: TProductFilterPanelProps) {
   const toggleCategory = useCallback(
     (cat: TProductCategory) => {
       const current = filters.categories;
@@ -25,10 +32,7 @@ export const FilterPanel = memo(function FilterPanel({ filters, priceBounds, onC
     [filters.categories, onChange],
   );
 
-  const handlePriceChange = useCallback(
-    (min: number, max: number) => onChange({ priceMin: min, priceMax: max }),
-    [onChange],
-  );
+  const handlePriceChange = useCallback((min: number, max: number) => onChange({ priceMin: min, priceMax: max }), [onChange]);
 
   // Resolve undefined filter values to their display defaults
   const priceMin = filters.priceMin ?? priceBounds.min;
@@ -78,7 +82,7 @@ export const FilterPanel = memo(function FilterPanel({ filters, priceBounds, onC
 
       {/* Price range */}
       <div>
-        <FilterPriceRangeSlider
+        <ProductFilterRangeSlider
           label="Price Range"
           min={priceBounds.min}
           max={priceBounds.max}

@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { FilterPanel } from "../modules/product/components/FilterPanel";
+import { ProductFilterPanel } from "../modules/product/components/ProductFilterPanel";
 import type { TProductFilters } from "../modules/product/product-types";
 import { DEFAULT_FILTERS } from "../modules/product/product-types";
 
@@ -20,7 +20,7 @@ describe("FilterPanel", () => {
 
   function renderPanel(filters: TProductFilters = defaultFilters) {
     return render(
-      <FilterPanel
+      <ProductFilterPanel
         filters={filters}
         priceBounds={TEST_PRICE_BOUNDS}
         onChange={onChangeMock}

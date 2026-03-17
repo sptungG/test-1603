@@ -1,13 +1,13 @@
 import type { TProduct } from "../product-types";
-import { VirtualizedProductList } from "./VirtualizedProductList";
+import { ProductListVirtualized } from "./ProductListVirtualized";
 
-interface ProductListContentProps {
+interface TProductListContentProps {
   loading: boolean;
   products: TProduct[];
   height: number;
 }
 
-export function ProductListContent({ loading, products, height }: ProductListContentProps) {
+export function ProductListContent({ loading, products, height }: TProductListContentProps) {
   if (loading) {
     return (
       <div className="flex flex-col gap-2">
@@ -18,5 +18,5 @@ export function ProductListContent({ loading, products, height }: ProductListCon
     );
   }
 
-  return <VirtualizedProductList products={products} height={height} />;
+  return <ProductListVirtualized products={products} height={height} />;
 }

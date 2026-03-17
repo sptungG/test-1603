@@ -178,10 +178,8 @@ Added explicit `width={96} height={96}` to every product `<img>`. Without known 
 
 ## AI Usage Disclosure
 
-This project was built with significant AI assistance (Claude via OpenCode):
-
 - **Architecture planning**: AI proposed the overall folder structure, component boundaries, and data flow design based on project requirements.
-- **Boilerplate generation**: AI generated the initial versions of all components, hooks, and the product data generator script.
+- **Boilerplate generation**: AI generated the initial versions of components, hooks, and the product data generator script.
 - **react-window v2 API**: AI identified that the installed version (v2) has a breaking API change from v1 (no `FixedSizeList`, uses `List` with `rowComponent`/`rowProps`) and adapted the implementation accordingly.
 - **URL state sync**: AI designed the pattern of coercing URL string params back to typed values in `PageProductList` using the existing `useUrlState` hook.
 - **Test generation**: AI authored the full test suite (unit + integration), including identifying a fake-timer/waitFor conflict in RTL tests and applying a real-timer override to fix it.
