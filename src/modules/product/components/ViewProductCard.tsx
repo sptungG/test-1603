@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Link } from "react-router";
 import { cn } from "../../../utils/utils";
 import type { TProduct } from "../product-types";
@@ -9,14 +10,21 @@ interface ViewProductCardProps {
   style?: React.CSSProperties;
 }
 
-export function ViewProductCard({ product, style }: ViewProductCardProps) {
+export const ViewProductCard = memo(function ViewProductCard({ product, style }: ViewProductCardProps) {
   return (
     <div style={style} className="">
       <Link
         to={`/products/${product.id}`}
         className="flex gap-4 relative bg-white rounded-xl border border-gray-100 p-4 hover:border-blue-200 hover:shadow-md transition-all group"
       >
-        <img src={product.image_url} alt={product.name} loading="lazy" className="h-24 w-24 rounded-lg object-cover shrink-0 bg-gray-100" />
+        <img
+          src={product.image_url}
+          alt={product.name}
+          loading="lazy"
+          width={96}
+          height={96}
+          className="h-24 w-24 rounded-lg object-cover shrink-0 bg-gray-100"
+        />
         <div className="flex flex-col justify-between flex-1 min-w-0">
           <div>
             <h3 className="font-medium text-gray-900 text-sm leading-tight group-hover:text-blue-700 truncate">{product.name}</h3>
@@ -37,4 +45,4 @@ export function ViewProductCard({ product, style }: ViewProductCardProps) {
       </Link>
     </div>
   );
-}
+});

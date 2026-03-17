@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { cn } from "../../../utils/utils";
 import type { TProductCategory } from "../product-types";
 import { CATEGORY_LABELS } from "../product-types";
@@ -15,10 +16,10 @@ const CATEGORY_COLORS: Record<TProductCategory, string> = {
   sports: "bg-orange-100 text-orange-700",
 };
 
-export function ViewCategoryBadge({ category, className }: BadgeProps) {
+export const ViewCategoryBadge = memo(function ViewCategoryBadge({ category, className }: BadgeProps) {
   return (
     <span className={cn("inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium", CATEGORY_COLORS[category], className)}>
       {CATEGORY_LABELS[category]}
     </span>
   );
-}
+});

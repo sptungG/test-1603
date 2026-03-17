@@ -1,23 +1,39 @@
+import { lazy, Suspense } from "react";
 import { createBrowserRouter } from "react-router";
 import { RouterProvider } from "react-router/dom";
 import { AuthProvider } from "../context/AuthContext";
-import PageLogin from "../modules/auth/PageLogin";
-import PageProductDetail from "../modules/product/PageProductDetail";
-import PageProductList from "../modules/product/PageProductList";
 import { AppLayout } from "./AppLayout";
 import { ProtectedRoute } from "./ProtectedRoute";
+
+const PageLogin = lazy(() => import("../modules/auth/PageLogin"));
+const PageProductList = lazy(() => import("../modules/product/PageProductList"));
+const PageProductDetail = lazy(() => import("../modules/product/PageProductDetail"));
+
+function PageFallback() {
+  return (
+    <div className="flex items-center justify-center min-h-64">
+      <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent" aria-label="Loading" />
+    </div>
+  );
+}
 
 const router = createBrowserRouter([
   {
     path: "/login",
-    element: <PageLogin />,
+    element: (
+      <Suspense fallback={<PageFallback />}>
+        <PageLogin />
+      </Suspense>
+    ),
   },
   {
     path: "/",
     element: (
       <ProtectedRoute>
         <AppLayout>
-          <PageProductList />
+          <Suspense fallback={<PageFallback />}>
+            <PageProductList />
+          </Suspense>
         </AppLayout>
       </ProtectedRoute>
     ),
@@ -27,7 +43,9 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <AppLayout>
-          <PageProductDetail />
+          <Suspense fallback={<PageFallback />}>
+            <PageProductDetail />
+          </Suspense>
         </AppLayout>
       </ProtectedRoute>
     ),

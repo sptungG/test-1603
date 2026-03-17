@@ -1,3 +1,4 @@
+import { memo, useCallback } from "react";
 import { Button } from "../../../components/ui/Button";
 import { cn } from "../../../utils/utils";
 import type { TProductCategory, TProductFilters } from "../product-types";
@@ -14,12 +15,20 @@ interface FilterPanelProps {
   filteredCount: number;
 }
 
-export function FilterPanel({ filters, priceBounds, onChange, onReset, totalCount, filteredCount }: FilterPanelProps) {
-  function toggleCategory(cat: TProductCategory) {
-    const current = filters.categories;
-    const next = current.includes(cat) ? current.filter((c) => c !== cat) : [...current, cat];
-    onChange({ categories: next });
-  }
+export const FilterPanel = memo(function FilterPanel({ filters, priceBounds, onChange, onReset, totalCount, filteredCount }: FilterPanelProps) {
+  const toggleCategory = useCallback(
+    (cat: TProductCategory) => {
+      const current = filters.categories;
+      const next = current.includes(cat) ? current.filter((c) => c !== cat) : [...current, cat];
+      onChange({ categories: next });
+    },
+    [filters.categories, onChange],
+  );
+
+  const handlePriceChange = useCallback(
+    (min: number, max: number) => onChange({ priceMin: min, priceMax: max }),
+    [onChange],
+  );
 
   // Resolve undefined filter values to their display defaults
   const priceMin = filters.priceMin ?? priceBounds.min;
@@ -77,7 +86,7 @@ export function FilterPanel({ filters, priceBounds, onChange, onReset, totalCoun
           valueMax={priceMax}
           step={10}
           formatValue={(v) => `$${v}`}
-          onChange={(min, max) => onChange({ priceMin: min, priceMax: max })}
+          onChange={handlePriceChange}
         />
       </div>
 
@@ -110,4 +119,4 @@ export function FilterPanel({ filters, priceBounds, onChange, onReset, totalCoun
       )}
     </aside>
   );
-}
+});

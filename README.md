@@ -2,6 +2,10 @@
 
 A high-performance React 19 application for browsing and filtering a 10,000-item product catalog.
 
+### Screens
+
+- ![Desktop](https://res.cloudinary.com/ngoviettung154/image/upload/v1773718825/_demo/test/2efa013d-dcd3-4b2a-bc36-42d0a5749f8d.png)
+
 ## Features
 
 - **High-Performance List**: Virtualized rendering of 10,000 products using `react-window` — only visible rows are rendered in the DOM.
@@ -123,6 +127,53 @@ Each product in `public/products.json` follows this schema:
 | `FilterPanel.test.tsx`   | Integration | Category toggle, rating radio, clear filters, result counts                              |
 | `PageLogin.test.tsx`     | Integration | Form rendering, input change, error display, loading state                               |
 
+## Production Optimizations
+
+### Bundle splitting & code splitting
+
+**Route-level lazy loading** (`components/Router.tsx`) — all three page components are loaded with `React.lazy()` and wrapped in `<Suspense>`. The browser only downloads a page's chunk when the user navigates to that route.
+
+**Manual vendor chunks** (`vite.config.ts`) — `manualChunks` groups `node_modules` into stable, independently-cacheable files:
+
+| Chunk                 | Gzip  | Notes                                         |
+| --------------------- | ----- | --------------------------------------------- |
+| `vendor-react`        | 56 kB | React + ReactDOM — changes rarely             |
+| `vendor-router`       | 30 kB | react-router                                  |
+| `vendor-icons`        | 4 kB  | lucide-react (tree-shaken to used icons only) |
+| `vendor-react-window` | 3 kB  | Virtualization lib                            |
+| `vendor`              | 12 kB | Remaining third-party libs                    |
+
+Additional build settings:
+
+- `assetsInlineLimit: 4096` — assets under 4 kB are inlined as base64 to save a network round-trip
+- `target: "es2020"` — drops legacy browser polyfills
+- `chunkSizeWarningLimit: 600` — flags unexpectedly large chunks during CI
+
+### Re-render optimizations
+
+**`React.memo`** applied to all components inside the hot render path:
+
+- `ViewProductCard` — rendered for every visible row in the virtualized list
+- `ViewCategoryBadge` — child of `ViewProductCard`
+- `ViewStarRating` — child of `ViewProductCard`
+- `FilterPanel` — only re-renders when filter values or counts actually change
+
+**Stable callbacks** — `updateFilters` and `resetFilters` in `PageProductList` are wrapped with `useCallback` so `FilterPanel`'s memo bailout is never bypassed by a new function reference. `toggleCategory` and `handlePriceChange` inside `FilterPanel` are also stabilized with `useCallback`.
+
+### SVG gradient stability (`ViewStarRating.tsx`)
+
+The partial-star SVG gradient previously used `Math.random().toString(36)` as its `<linearGradient id>`. This produced a new random string on every render, causing React to diff a changed DOM attribute every cycle. Replaced with `useId()` which produces a stable, unique-per-component ID.
+
+Split the single `StarIcon` component into three focused components (`StarFull`, `StarEmpty`, `StarPartial`) so only the partial-star variant pays the cost of the gradient/`useId` overhead.
+
+### Layout shift prevention (`ViewProductCard.tsx`)
+
+Added explicit `width={96} height={96}` to every product `<img>`. Without known dimensions the browser cannot reserve space before the image loads, causing Cumulative Layout Shift (CLS).
+
+### Path alias
+
+`@/` resolves to `src/` in both Vite (`resolve.alias`) and TypeScript (`paths`), enabling cleaner imports across the codebase.
+
 ---
 
 ## AI Usage Disclosure
@@ -137,7 +188,3 @@ This project was built with significant AI assistance (Claude via OpenCode):
 - **Bug fixes**: AI diagnosed a Label-Input association bug (`htmlFor`/`id` missing) found during test failures and fixed it directly in the `Input` component.
 
 Human review and direction was provided throughout: library choices (react-window, Vitest), auth strategy, and architectural decisions were made by the human developer.
-
-### Screens
-
-- ![Desktop](https://res.cloudinary.com/ngoviettung154/image/upload/v1773718825/_demo/test/2efa013d-dcd3-4b2a-bc36-42d0a5749f8d.png)

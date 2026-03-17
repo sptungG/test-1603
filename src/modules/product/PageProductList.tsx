@@ -1,5 +1,5 @@
 import { Search, SlidersHorizontal } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Input } from "../../components/ui/Input";
 import { useDebounce } from "../../hooks/useDebounce";
 import { useUrlState } from "../../hooks/useUrlState";
@@ -85,26 +85,29 @@ export default function PageProductList() {
   // Filtered + sorted results
   const filteredProducts = useMemo(() => filterAndSortProducts(allProducts, filters), [allProducts, filters]);
 
-  function updateFilters(partial: Partial<TProductFilters>) {
-    setUrlState((s) => ({
-      ...s,
-      ...(partial.categories !== undefined && {
-        categories: partial.categories,
-      }),
-      ...(partial.priceMin !== undefined && {
-        priceMin: String(partial.priceMin),
-      }),
-      ...(partial.priceMax !== undefined && {
-        priceMax: String(partial.priceMax),
-      }),
-      ...(partial.minRating !== undefined && {
-        minRating: String(partial.minRating),
-      }),
-      ...(partial.sort !== undefined && { sort: partial.sort }),
-    }));
-  }
+  const updateFilters = useCallback(
+    (partial: Partial<TProductFilters>) => {
+      setUrlState((s) => ({
+        ...s,
+        ...(partial.categories !== undefined && {
+          categories: partial.categories,
+        }),
+        ...(partial.priceMin !== undefined && {
+          priceMin: String(partial.priceMin),
+        }),
+        ...(partial.priceMax !== undefined && {
+          priceMax: String(partial.priceMax),
+        }),
+        ...(partial.minRating !== undefined && {
+          minRating: String(partial.minRating),
+        }),
+        ...(partial.sort !== undefined && { sort: partial.sort }),
+      }));
+    },
+    [setUrlState],
+  );
 
-  function resetFilters() {
+  const resetFilters = useCallback(() => {
     setSearchInput("");
     setUrlState({
       search: "",
@@ -114,7 +117,7 @@ export default function PageProductList() {
       minRating: undefined,
       sort: DEFAULT_FILTERS.sort,
     });
-  }
+  }, [setUrlState]);
 
   if (error) {
     return (
