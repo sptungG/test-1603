@@ -18,16 +18,16 @@ A high-performance React 19 application for browsing and filtering a 10,000-item
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Framework | React 19 + TypeScript |
-| Build | Vite 8 |
-| Routing | React Router 7 |
-| Styling | Tailwind CSS v4 |
-| Icons | lucide-react |
-| Virtualization | react-window v2 |
-| URL State | query-string + custom `useUrlState` hook |
-| Testing | Vitest + React Testing Library |
+| Layer          | Technology                               |
+| -------------- | ---------------------------------------- |
+| Framework      | React 19 + TypeScript                    |
+| Build          | Vite 8                                   |
+| Routing        | React Router 7                           |
+| Styling        | Tailwind CSS v4                          |
+| Icons          | lucide-react                             |
+| Virtualization | react-window v2                          |
+| URL State      | query-string + custom `useUrlState` hook |
+| Testing        | Vitest + React Testing Library           |
 
 ## Getting Started
 
@@ -102,13 +102,13 @@ Each product in `public/products.json` follows this schema:
 
 ```ts
 {
-  id: string;          // UUID
-  name: string;        // "{Brand} {Adjective} {Type}"
-  price: number;       // $5–$2000
-  rating: number;      // 1.0–5.0
+  id: string; // UUID
+  name: string; // "{Brand} {Adjective} {Type}"
+  price: number; // $5–$2000
+  rating: number; // 1.0–5.0
   category: "electronics" | "clothing" | "books" | "home-garden" | "sports";
-  stock: number;       // 0–500
-  image_url: string;   // https://picsum.photos/seed/{n}/400/300
+  stock: number; // 0–500
+  image_url: string; // https://picsum.photos/seed/{n}/400/300
 }
 ```
 
@@ -116,12 +116,12 @@ Each product in `public/products.json` follows this schema:
 
 **40 tests** across 4 test files:
 
-| File | Type | Coverage |
-|---|---|---|
-| `productService.test.ts` | Unit | Filter/sort logic: search, categories, price range, rating, sort orders, mutation safety |
-| `AuthContext.test.tsx` | Integration | Login, logout, bad credentials, localStorage persistence, session restore |
-| `FilterPanel.test.tsx` | Integration | Category toggle, rating radio, clear filters, result counts |
-| `PageLogin.test.tsx` | Integration | Form rendering, input change, error display, loading state |
+| File                     | Type        | Coverage                                                                                 |
+| ------------------------ | ----------- | ---------------------------------------------------------------------------------------- |
+| `productService.test.ts` | Unit        | Filter/sort logic: search, categories, price range, rating, sort orders, mutation safety |
+| `AuthContext.test.tsx`   | Integration | Login, logout, bad credentials, localStorage persistence, session restore                |
+| `FilterPanel.test.tsx`   | Integration | Category toggle, rating radio, clear filters, result counts                              |
+| `PageLogin.test.tsx`     | Integration | Form rendering, input change, error display, loading state                               |
 
 ---
 
@@ -137,3 +137,7 @@ This project was built with significant AI assistance (Claude via OpenCode):
 - **Bug fixes**: AI diagnosed a Label-Input association bug (`htmlFor`/`id` missing) found during test failures and fixed it directly in the `Input` component.
 
 Human review and direction was provided throughout: library choices (react-window, Vitest), auth strategy, and architectural decisions were made by the human developer.
+
+### Screens
+
+- ![Desktop](https://res.cloudinary.com/ngoviettung154/image/upload/v1773718825/_demo/test/2efa013d-dcd3-4b2a-bc36-42d0a5749f8d.png)
