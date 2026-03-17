@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { useNavigate, useLocation } from "react-router";
 import { Package } from "lucide-react";
-import { useAuth } from "../../context/AuthContext";
-import { Input } from "../../components/ui/Input";
+import { useState } from "react";
+import { useLocation, useNavigate } from "react-router";
 import { Button } from "../../components/ui/Button";
+import { Input } from "../../components/ui/Input";
+import { useAuth } from "../../context/AuthContext";
 
 export default function PageLogin() {
   const { login } = useAuth();
@@ -66,21 +66,21 @@ export default function PageLogin() {
               required
             />
 
-            {error && (
-              <p className="text-sm text-red-500 bg-red-50 rounded-lg px-3 py-2">
-                {error}
-              </p>
-            )}
+            {error && <p className="text-sm text-red-500 bg-red-50 rounded-lg px-3 py-2">{error}</p>}
 
             <Button type="submit" size="lg" loading={loading} className="mt-2">
               Sign In
             </Button>
           </form>
 
-          <div className="mt-6 rounded-lg bg-gray-50 p-4 text-xs text-gray-500">
-            <p className="font-semibold text-gray-600 mb-1">Demo credentials:</p>
-            <p>Username: <code className="font-mono bg-gray-200 px-1 rounded">admin</code></p>
-            <p>Password: <code className="font-mono bg-gray-200 px-1 rounded">password123</code></p>
+          <div className="mt-6 rounded-lg flex flex-col gap-2 bg-gray-50 p-4 text-xs text-gray-500">
+            <p className="font-semibold text-gray-600 mb-0.5">Demo credentials:</p>
+            <p>
+              Username: <code className="font-mono bg-gray-200 px-1 rounded">admin</code>
+            </p>
+            <p>
+              Password: <code className="font-mono bg-gray-200 px-1 rounded">password123</code>
+            </p>
           </div>
         </div>
       </div>

@@ -137,7 +137,7 @@ export default function PageProductList() {
           <select
             value={filters.sort}
             onChange={(e) => updateFilters({ sort: e.target.value as TSortOption })}
-            className="rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
+            className="rounded-lg border border-gray-200 bg-white px-2 py-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
             aria-label="Sort products"
           >
             {SORT_OPTIONS.map((opt) => (
