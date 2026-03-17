@@ -1,5 +1,5 @@
 import { LogOutIcon, Package } from "lucide-react";
-import { Link, useLocation } from "react-router";
+import { Link } from "react-router";
 import { useAuth } from "../context/AuthContext";
 import { Button } from "./ui/Button";
 
@@ -9,7 +9,6 @@ interface TAppLayoutProps {
 
 export function AppLayout({ children }: TAppLayoutProps) {
   const { user, logout } = useAuth();
-  const location = useLocation();
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">

@@ -17,13 +17,13 @@ export default function PageProductList() {
   const [error, setError] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // URL state
+  // URL state — priceMin/priceMax/minRating are omitted from URL until explicitly set
   const [urlState, setUrlState] = useUrlState({
     search: DEFAULT_FILTERS.search,
     categories: [] as string[],
-    priceMin: String(DEFAULT_FILTERS.priceMin),
-    priceMax: String(DEFAULT_FILTERS.priceMax),
-    minRating: String(DEFAULT_FILTERS.minRating),
+    priceMin: undefined as string | undefined,
+    priceMax: undefined as string | undefined,
+    minRating: undefined as string | undefined,
     sort: DEFAULT_FILTERS.sort as string,
   });
 
@@ -40,8 +40,20 @@ export default function PageProductList() {
     }
   }, [debouncedSearch, setUrlState]);
 
-  // Derived filters from URL state
-  const filters: TProductFilters = useMemo((): TProductFilters => {
+  // Actual price bounds derived from loaded data
+  const priceBounds = useMemo(() => {
+    if (allProducts.length === 0) return { min: 0, max: 2000 };
+    let min = allProducts[0].price;
+    let max = allProducts[0].price;
+    for (const p of allProducts) {
+      if (p.price < min) min = p.price;
+      if (p.price > max) max = p.price;
+    }
+    return { min: Math.floor(min), max: Math.ceil(max) };
+  }, [allProducts]);
+
+  // Derived filters from URL state — undefined URL params fall back to data-derived bounds
+  const filters: TProductFilters = useMemo(() => {
     const rawCats = urlState.categories;
     const categories: TProductCategory[] = (Array.isArray(rawCats) ? rawCats : rawCats ? [rawCats as string] : []).filter(
       Boolean,
@@ -50,9 +62,9 @@ export default function PageProductList() {
     return {
       search: urlState.search ?? "",
       categories,
-      priceMin: Number(urlState.priceMin ?? DEFAULT_FILTERS.priceMin),
-      priceMax: Number(urlState.priceMax ?? DEFAULT_FILTERS.priceMax),
-      minRating: Number(urlState.minRating ?? DEFAULT_FILTERS.minRating),
+      priceMin: urlState.priceMin !== undefined ? Number(urlState.priceMin) : undefined,
+      priceMax: urlState.priceMax !== undefined ? Number(urlState.priceMax) : undefined,
+      minRating: urlState.minRating !== undefined ? Number(urlState.minRating) : undefined,
       sort: (urlState.sort ?? DEFAULT_FILTERS.sort) as TSortOption,
     };
   }, [urlState]);
@@ -97,9 +109,9 @@ export default function PageProductList() {
     setUrlState({
       search: "",
       categories: [],
-      priceMin: String(DEFAULT_FILTERS.priceMin),
-      priceMax: String(DEFAULT_FILTERS.priceMax),
-      minRating: String(DEFAULT_FILTERS.minRating),
+      priceMin: undefined,
+      priceMax: undefined,
+      minRating: undefined,
       sort: DEFAULT_FILTERS.sort,
     });
   }
@@ -177,6 +189,7 @@ export default function PageProductList() {
             ) : (
               <FilterPanel
                 filters={filters}
+                priceBounds={priceBounds}
                 onChange={updateFilters}
                 onReset={resetFilters}
                 totalCount={allProducts.length}
@@ -196,9 +209,9 @@ export default function PageProductList() {
             </div>
           ) : (
             <>
-              <p className="text-xs text-gray-500 mb-3">
+              {/* <p className="text-xs text-gray-500 mb-3">
                 Showing {filteredProducts.length.toLocaleString()} result{filteredProducts.length !== 1 ? "s" : ""}
-              </p>
+              </p> */}
               <VirtualizedProductList products={filteredProducts} height={LIST_HEIGHT} />
             </>
           )}

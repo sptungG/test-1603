@@ -2,11 +2,12 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { FilterPanel } from "../modules/product/components/FilterPanel";
 import type { TProductFilters } from "../modules/product/product-types";
-import { DEFAULT_FILTERS, PRICE_RANGE } from "../modules/product/product-types";
+import { DEFAULT_FILTERS } from "../modules/product/product-types";
+
+const TEST_PRICE_BOUNDS = { min: 0, max: 2000 };
 
 const defaultFilters: TProductFilters = {
   ...DEFAULT_FILTERS,
-  priceMax: PRICE_RANGE.max,
 };
 
 describe("FilterPanel", () => {
@@ -18,7 +19,16 @@ describe("FilterPanel", () => {
   });
 
   function renderPanel(filters: TProductFilters = defaultFilters) {
-    return render(<FilterPanel filters={filters} onChange={onChangeMock} onReset={onResetMock} totalCount={10000} filteredCount={250} />);
+    return render(
+      <FilterPanel
+        filters={filters}
+        priceBounds={TEST_PRICE_BOUNDS}
+        onChange={onChangeMock}
+        onReset={onResetMock}
+        totalCount={10000}
+        filteredCount={250}
+      />,
+    );
   }
 
   it("renders all 5 category checkboxes", () => {

@@ -28,12 +28,17 @@ export function filterAndSortProducts(products: TProduct[], filters: TProductFil
     result = result.filter((p) => filters.categories.includes(p.category));
   }
 
-  // Price range filter
-  result = result.filter((p) => p.price >= filters.priceMin && p.price <= filters.priceMax);
+  // Price range filter — only applied when bounds are defined
+  if (filters.priceMin !== undefined) {
+    result = result.filter((p) => p.price >= filters.priceMin!);
+  }
+  if (filters.priceMax !== undefined) {
+    result = result.filter((p) => p.price <= filters.priceMax!);
+  }
 
-  // Min rating filter
-  if (filters.minRating > 0) {
-    result = result.filter((p) => p.rating >= filters.minRating);
+  // Min rating filter — only applied when defined and > 0
+  if (filters.minRating !== undefined && filters.minRating > 0) {
+    result = result.filter((p) => p.rating >= filters.minRating!);
   }
 
   // Sort
@@ -45,6 +50,8 @@ export function filterAndSortProducts(products: TProduct[], filters: TProductFil
 function sortProducts(products: TProduct[], sort: TSortOption): TProduct[] {
   const sorted = [...products];
   switch (sort) {
+    case "created_at":
+      return sorted; // preserve original JSON insertion order
     case "price_asc":
       return sorted.sort((a, b) => a.price - b.price);
     case "price_desc":

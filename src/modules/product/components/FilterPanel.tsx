@@ -1,26 +1,36 @@
 import { Button } from "../../../components/ui/Button";
 import { cn } from "../../../utils/utils";
 import type { TProductCategory, TProductFilters } from "../product-types";
-import { CATEGORY_LABELS, PRICE_RANGE, PRODUCT_CATEGORIES } from "../product-types";
+import { CATEGORY_LABELS, PRODUCT_CATEGORIES } from "../product-types";
 import { FilterPriceRangeSlider } from "./FilterRangeSlider";
 
 interface FilterPanelProps {
   filters: TProductFilters;
+  /** Actual min/max prices derived from loaded product data */
+  priceBounds: { min: number; max: number };
   onChange: (filters: Partial<TProductFilters>) => void;
   onReset: () => void;
   totalCount: number;
   filteredCount: number;
 }
 
-export function FilterPanel({ filters, onChange, onReset, totalCount, filteredCount }: FilterPanelProps) {
+export function FilterPanel({ filters, priceBounds, onChange, onReset, totalCount, filteredCount }: FilterPanelProps) {
   function toggleCategory(cat: TProductCategory) {
     const current = filters.categories;
     const next = current.includes(cat) ? current.filter((c) => c !== cat) : [...current, cat];
     onChange({ categories: next });
   }
 
+  // Resolve undefined filter values to their display defaults
+  const priceMin = filters.priceMin ?? priceBounds.min;
+  const priceMax = filters.priceMax ?? priceBounds.max;
+  const minRating = filters.minRating ?? 0;
+
   const hasActiveFilters =
-    filters.categories.length > 0 || filters.priceMin > PRICE_RANGE.min || filters.priceMax < PRICE_RANGE.max || filters.minRating > 0;
+    filters.categories.length > 0 ||
+    filters.priceMin !== undefined ||
+    filters.priceMax !== undefined ||
+    (filters.minRating !== undefined && filters.minRating > 0);
 
   return (
     <aside className="flex flex-col gap-6">
@@ -61,10 +71,10 @@ export function FilterPanel({ filters, onChange, onReset, totalCount, filteredCo
       <div>
         <FilterPriceRangeSlider
           label="Price Range"
-          min={PRICE_RANGE.min}
-          max={PRICE_RANGE.max}
-          valueMin={filters.priceMin}
-          valueMax={filters.priceMax}
+          min={priceBounds.min}
+          max={priceBounds.max}
+          valueMin={priceMin}
+          valueMax={priceMax}
           step={10}
           formatValue={(v) => `$${v}`}
           onChange={(min, max) => onChange({ priceMin: min, priceMax: max })}
@@ -80,12 +90,12 @@ export function FilterPanel({ filters, onChange, onReset, totalCount, filteredCo
               <input
                 type="radio"
                 name="minRating"
-                value={r}
-                checked={filters.minRating === r}
+                value={r || 0}
+                checked={minRating === r}
                 onChange={() => onChange({ minRating: r })}
                 className="h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
               />
-              <span className={cn("text-sm", filters.minRating === r ? "text-gray-900 font-medium" : "text-gray-600 group-hover:text-gray-900")}>
+              <span className={cn("text-sm", minRating === r ? "text-gray-900 font-medium" : "text-gray-600 group-hover:text-gray-900")}>
                 {r === 0 ? "Any rating" : `${r}+ stars`}
               </span>
             </label>

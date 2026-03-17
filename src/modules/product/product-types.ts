@@ -10,14 +10,17 @@ export interface TProduct {
   image_url: string;
 }
 
-export type TSortOption = "price_asc" | "price_desc" | "rating_desc" | "name_asc" | "name_desc";
+export type TSortOption = "created_at" | "price_asc" | "price_desc" | "rating_desc" | "name_asc" | "name_desc";
 
 export interface TProductFilters {
   search: string;
   categories: TProductCategory[];
-  priceMin: number;
-  priceMax: number;
-  minRating: number;
+  /** undefined = no price floor applied */
+  priceMin: number | undefined;
+  /** undefined = no price ceiling applied */
+  priceMax: number | undefined;
+  /** undefined = no rating filter applied */
+  minRating: number | undefined;
   sort: TSortOption;
 }
 
@@ -32,6 +35,7 @@ export const CATEGORY_LABELS: Record<TProductCategory, string> = {
 };
 
 export const SORT_OPTIONS: { value: TSortOption; label: string }[] = [
+  { value: "created_at", label: "Newest First" },
   { value: "price_asc", label: "Price: Low to High" },
   { value: "price_desc", label: "Price: High to Low" },
   { value: "rating_desc", label: "Highest Rated" },
@@ -42,10 +46,10 @@ export const SORT_OPTIONS: { value: TSortOption; label: string }[] = [
 export const DEFAULT_FILTERS: TProductFilters = {
   search: "",
   categories: [],
-  priceMin: 0,
-  priceMax: 2000,
-  minRating: 0,
-  sort: "price_asc",
+  priceMin: undefined,
+  priceMax: undefined,
+  minRating: undefined,
+  sort: "created_at",
 };
 
 export const PRICE_RANGE = { min: 0, max: 2000 };
