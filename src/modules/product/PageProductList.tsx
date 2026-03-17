@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
 import { useFetch } from "../../hooks/useFetch";
+import { ProductFilterSearchBar } from "./components/ProductFilterSearchBar";
 import { ProductFilterSidebar } from "./components/ProductFilterSidebar";
 import { ProductListContent } from "./components/ProductListContent";
 import { ProductListHeader } from "./components/ProductListHeader";
-import { ProductSearchBar } from "./components/ProductSearchBar";
 import { useProductFilters } from "./hooks/useProductFilters";
 import { fetchProducts, filterAndSortProducts } from "./product-service";
 import type { TProduct } from "./product-types";
@@ -31,7 +31,7 @@ export default function PageProductList() {
     <div className="max-w-screen-xl mx-auto px-4 sm:px-6 py-6">
       <ProductListHeader totalCount={allProducts?.length ?? 0} />
 
-      <ProductSearchBar
+      <ProductFilterSearchBar
         searchInput={searchInput}
         sort={filters.sort}
         onSearchChange={setSearchInput}

@@ -3,7 +3,7 @@ import { Input } from "../../../components/ui/Input";
 import type { TProductFilters, TSortOption } from "../product-types";
 import { SORT_OPTIONS } from "../product-types";
 
-interface ProductSearchBarProps {
+interface TProductFilterSearchBarProps {
   searchInput: string;
   sort: TSortOption;
   onSearchChange: (value: string) => void;
@@ -11,7 +11,7 @@ interface ProductSearchBarProps {
   onFilterToggle: () => void;
 }
 
-export function ProductSearchBar({ searchInput, sort, onSearchChange, onSortChange, onFilterToggle }: ProductSearchBarProps) {
+export function ProductFilterSearchBar({ searchInput, sort, onSearchChange, onSortChange, onFilterToggle }: TProductFilterSearchBarProps) {
   return (
     <div className="flex flex-col sm:flex-row gap-3 mb-6">
       <div className="flex-1">
@@ -29,7 +29,7 @@ export function ProductSearchBar({ searchInput, sort, onSearchChange, onSortChan
         <select
           value={sort}
           onChange={(e) => onSortChange(e.target.value as TSortOption)}
-          className="rounded-lg border border-gray-200 bg-white px-2 py-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
+          className="rounded-lg border border-gray-200 h-[42px] bg-white px-2 py-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
           aria-label="Sort products"
         >
           {SORT_OPTIONS.map((opt) => (
