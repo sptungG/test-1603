@@ -3,7 +3,7 @@ import qs from "query-string";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 
-export interface Options {
+export interface TOptions {
   navigateMode?: "push" | "replace";
   parseOptions?: ParseOptions;
   stringifyOptions?: StringifyOptions;
@@ -12,16 +12,18 @@ export interface Options {
 const baseParseConfig: ParseOptions = {
   parseNumbers: false,
   parseBooleans: false,
+  arrayFormat: "comma",
 };
 
 const baseStringifyConfig: StringifyOptions = {
   skipNull: false,
   skipEmptyString: false,
+  arrayFormat: "comma",
 };
 
-type UrlState = Record<string, any>;
+type TUrlState = Record<string, any>;
 
-export const useUrlState = <S extends UrlState = UrlState>(initialState?: S | (() => S), options?: Options) => {
+export const useUrlState = <S extends TUrlState = TUrlState>(initialState?: S | (() => S), options?: TOptions) => {
   type State = Partial<{ [key in keyof S]: any }>;
   const { navigateMode = "push", parseOptions, stringifyOptions } = options || {};
 
