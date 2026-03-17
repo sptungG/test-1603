@@ -1,0 +1,30 @@
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+* {
+  margin: 0;
+  padding: 0;
+  font: inherit;
+}
+
+input,
+select,
+textarea {
+  background-color: transparent;
+  outline: none;
+}
+button {
+  cursor: pointer;
+  background-color: transparent;
+  outline: none;
+}
+body {
+  min-height: 100dvh;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1;
+}
+
+@import "tailwindcss";
