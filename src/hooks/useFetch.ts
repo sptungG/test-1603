@@ -1,68 +1,67 @@
 import { useCallback, useEffect, useState } from "react";
 
-export const useFetch = <TError, TFetchFn extends FetchFn<any, any>, TData = TGetDataType<TFetchFn>, TArgs = TGetArgsType<TFetchFn>>(
-  fetchFn: TFetchFn,
+/**
+ * Generic data-fetching hook.
+ *
+ * Accepts any async function that resolves to TData.
+ * Automatically fires on mount (unless `skip: true`) and exposes a manual
+ * `refetch` function for imperative re-fetches.
+ *
+ * @example
+ * const [{ data, loading, error }] = useFetch(fetchProducts);
+ */
+export const useFetch = <TData, TArgs extends Record<string, unknown> = Record<string, never>>(
+  fetchFn: FetchFn<TArgs, TData>,
   optionalProps?: TUseFetchOptionalProps<TArgs>,
-): TUseFetchResult<TError, TData, TArgs> => {
-  const { args, skip = false } = optionalProps || {};
+): TUseFetchResult<TData, TArgs> => {
+  const { args, skip = false } = optionalProps ?? {};
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(!skip);
   const [result, setResult] = useState<TData | null>(null);
-  const [error, setError] = useState<TError | null>(null);
+  const [error, setError] = useState<Error | null>(null);
 
-  const useFetchArgsDeps = args ? Object.values(args) : [];
+  // Flatten args into a stable dependency list for useCallback
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const argsDep = args ? Object.values(args) : [];
 
   const fetchData = useCallback(
     async (immediateArgs?: TArgs): Promise<TData | null> => {
       setLoading(true);
-
+      setError(null);
       try {
-        const response = await fetchFn((immediateArgs || args) as TArgs);
-        const result = (await response.json()) as TData;
-        setResult(result);
-        return result;
+        const data = await fetchFn((immediateArgs ?? args) as TArgs);
+        setResult(data);
+        return data;
       } catch (e) {
-        setError(e as TError);
+        setError(e instanceof Error ? e : new Error(String(e)));
         return null;
       } finally {
         setLoading(false);
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [fetchFn, ...useFetchArgsDeps],
+    [fetchFn, ...argsDep],
   );
 
   useEffect(() => {
-    if (skip) {
-      return;
-    }
-
+    if (skip) return;
     void fetchData();
   }, [skip, fetchData]);
 
   return [{ data: result, loading, error }, fetchData];
 };
 
-export type FetchResponse<TData> = Promise<
-  Response & {
-    json: () => Promise<TData>;
-  }
->;
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
 
-//
-//
-//
+/** Any async function that accepts optional args and resolves to TData. */
+export type FetchFn<TArgs, TData> = (args?: TArgs) => Promise<TData>;
 
-export type TUseFetchResult<TError, TData, TArgs> = [
-  { data?: TData | null; loading: boolean; error?: TError | null },
+export type TUseFetchResult<TData, TArgs> = [
+  { data: TData | null; loading: boolean; error: Error | null },
   (args?: TArgs) => Promise<TData | null>,
 ];
-
-export type TGetArgsType<TFetchFn> = TFetchFn extends (args: infer ArgsType) => any ? ArgsType : never;
-
-export type TGetDataType<TFetchFn> = TFetchFn extends (args: any) => FetchResponse<infer TData> ? TData : never;
-
-export type FetchFn<TArgs extends Record<string, any>, TData> = (args: TArgs) => FetchResponse<TData>;
 
 export interface TUseFetchOptionalProps<TArgs> {
   args?: TArgs;

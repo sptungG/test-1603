@@ -1,28 +1,17 @@
-import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
 import { Button } from "../../components/ui/Button";
+import { useFetch } from "../../hooks/useFetch";
 import { ViewCategoryBadge } from "./components/ViewCategoryBadge";
 import { ViewStarRating } from "./components/ViewStarRating";
-import { fetchProducts } from "./product-service";
+import { fetchProductById } from "./product-service";
 import type { TProduct } from "./product-types";
 
 export default function PageProductDetail() {
   const { id } = useParams<{ id: string }>();
-  const [product, setProduct] = useState<TProduct | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [notFound, setNotFound] = useState(false);
 
-  useEffect(() => {
-    fetchProducts().then((products) => {
-      const found = products.find((p) => p.id === id);
-      if (found) {
-        setProduct(found);
-      } else {
-        setNotFound(true);
-      }
-      setLoading(false);
-    });
-  }, [id]);
+  const [{ data: product, loading }] = useFetch<TProduct | null, { id: string }>(fetchProductById, {
+    args: { id: id! },
+  });
 
   if (loading) {
     return (
@@ -43,7 +32,7 @@ export default function PageProductDetail() {
     );
   }
 
-  if (notFound || !product) {
+  if (!product) {
     return (
       <div className="max-w-screen-md mx-auto px-4 sm:px-6 py-10 text-center">
         <div className="text-gray-300 text-6xl mb-4">404</div>

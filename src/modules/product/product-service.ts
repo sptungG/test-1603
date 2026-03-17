@@ -14,6 +14,11 @@ export async function fetchProducts(): Promise<TProduct[]> {
   return data;
 }
 
+export async function fetchProductById(args?: { id: string }): Promise<TProduct | null> {
+  const products = await fetchProducts();
+  return products.find((p) => p.id === args?.id) ?? null;
+}
+
 export function filterAndSortProducts(products: TProduct[], filters: TProductFilters): TProduct[] {
   let result = products;
 
