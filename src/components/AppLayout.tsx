@@ -1,7 +1,6 @@
-import { Package } from "lucide-react";
+import { LogOutIcon, Package } from "lucide-react";
 import { Link, useLocation } from "react-router";
 import { useAuth } from "../context/AuthContext";
-import { cn } from "../utils/utils";
 import { Button } from "./ui/Button";
 
 interface TAppLayoutProps {
@@ -24,7 +23,7 @@ export function AppLayout({ children }: TAppLayoutProps) {
             <span className="font-semibold text-lg">Product Explorer</span>
           </Link>
 
-          <nav className="hidden sm:flex items-center gap-1">
+          {/* <nav className="hidden sm:flex items-center gap-1">
             <Link
               to="/"
               className={cn(
@@ -34,12 +33,12 @@ export function AppLayout({ children }: TAppLayoutProps) {
             >
               Dashboard
             </Link>
-          </nav>
+          </nav> */}
 
           <div className="flex items-center gap-3">
             {user && <span className="hidden sm:block text-sm text-gray-500">{user.username}</span>}
-            <Button variant="secondary" size="sm" onClick={logout}>
-              Sign Out
+            <Button variant="secondary" size="sm" className="size-8 p-0" onClick={logout}>
+              <LogOutIcon className="size-4 shrink-0" />
             </Button>
           </div>
         </div>
