@@ -19,14 +19,6 @@ export default function PageProductList() {
 
   const filteredProducts = useMemo(() => filterAndSortProducts(allProducts ?? [], filters), [allProducts, filters]);
 
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-64">
-        <p className="text-red-500">Failed to load products: {error.message}</p>
-      </div>
-    );
-  }
-
   return (
     <div className="max-w-screen-xl mx-auto px-4 sm:px-6 py-6">
       <ProductListHeader totalCount={allProducts?.length ?? 0} />
@@ -52,7 +44,13 @@ export default function PageProductList() {
         />
 
         <div className="flex-1 min-w-0">
-          <ProductListContent loading={loading} products={filteredProducts} height={LIST_HEIGHT} />
+          {error ? (
+            <div className="flex items-center justify-center min-h-64">
+              <p className="text-red-500">Failed to load products: {error?.message}</p>
+            </div>
+          ) : (
+            <ProductListContent loading={loading} products={filteredProducts} height={LIST_HEIGHT} />
+          )}
         </div>
       </div>
     </div>
