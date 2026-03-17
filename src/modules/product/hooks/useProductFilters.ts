@@ -4,7 +4,7 @@ import { useUrlState } from "../../../hooks/useUrlState";
 import type { TProduct, TProductCategory, TProductFilters, TSortOption } from "../product-types";
 import { DEFAULT_FILTERS } from "../product-types";
 
-export interface UseProductFiltersResult {
+export interface TUseProductFiltersResult {
   filters: TProductFilters;
   searchInput: string;
   setSearchInput: (v: string) => void;
@@ -16,7 +16,7 @@ export interface UseProductFiltersResult {
  * Manages all filter state for the product list page.
  * Derives typed filters from URL search params and debounces the search input.
  */
-export function useProductFilters(allProducts: TProduct[] | null): UseProductFiltersResult & {
+export function useProductFilters(allProducts: TProduct[] | null): TUseProductFiltersResult & {
   priceBounds: { min: number; max: number };
 } {
   const [urlState, setUrlState] = useUrlState({

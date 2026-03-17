@@ -1,12 +1,12 @@
 import { memo, useId } from "react";
 import { cn } from "../../../utils/utils";
 
-interface ViewStarRatingProps {
+interface TViewStarRatingProps {
   rating: number;
   size?: "sm" | "md";
 }
 
-export const ViewStarRating = memo(function ViewStarRating({ rating, size = "md" }: ViewStarRatingProps) {
+export const ViewStarRating = memo(function ViewStarRating({ rating, size = "md" }: TViewStarRatingProps) {
   const full = Math.floor(rating);
   const partial = rating - full;
   const empty = 5 - Math.ceil(rating);

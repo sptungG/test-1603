@@ -6,7 +6,7 @@ import { ViewProductCard } from "./ViewProductCard";
 
 const ITEM_HEIGHT = 132; // px per row
 
-interface RowExtraProps {
+interface TRowExtraProps {
   products: TProduct[];
 }
 
@@ -18,7 +18,7 @@ function Row({
   ariaAttributes: Record<string, unknown>;
   index: number;
   style: CSSProperties;
-} & RowExtraProps) {
+} & TRowExtraProps) {
   const product = products[index];
   return <ViewProductCard product={product} style={style} />;
 }
@@ -40,7 +40,7 @@ export function ProductListVirtualized({ products, height }: TProductListVirtual
   }
 
   return (
-    <List<RowExtraProps>
+    <List<TRowExtraProps>
       style={{ height }}
       rowComponent={Row}
       rowCount={products.length}

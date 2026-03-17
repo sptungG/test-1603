@@ -62,42 +62,49 @@ pnpm lint         # ESLint
 src/
 ├── components/
 │   ├── ui/
-│   │   ├── Button.tsx          # Shared button with loading state (Loader2 spinner)
-│   │   └── Input.tsx           # Shared input with optional left-icon slot
-│   ├── AppLayout.tsx           # Sticky header + main layout wrapper
-│   ├── ProtectedRoute.tsx      # Redirects unauthenticated users to /login
-│   └── Router.tsx              # All application routes
+│   │   ├── Button.tsx                    # Shared button with loading state (Loader2 spinner)
+│   │   └── Input.tsx                     # Shared input with optional left-icon slot
+│   ├── AppLayout.tsx                     # Sticky header + main layout wrapper
+│   ├── ProtectedRoute.tsx                # Redirects unauthenticated users to /login
+│   └── Router.tsx                        # All application routes (lazy-loaded)
 ├── context/
-│   └── AuthContext.tsx         # Login/logout state, localStorage persistence
+│   └── AuthContext.tsx                   # Login/logout state, localStorage persistence
 ├── hooks/
-│   ├── useDebounce.ts          # Generic debounce hook (shared)
-│   ├── useFetch.ts             # Generic data-fetching hook
-│   └── useUrlState.ts          # Sync arbitrary state to URL search params
+│   ├── useDebounce.ts                    # Generic debounce hook (shared)
+│   ├── useFetch.ts                       # Generic data-fetching hook
+│   └── useUrlState.ts                    # Sync arbitrary state to URL search params
 ├── modules/
 │   ├── auth/
-│   │   └── PageLogin.tsx       # Login page
+│   │   └── PageLogin.tsx                 # Login page
 │   └── product/
 │       ├── components/
-│       │   ├── FilterPanel.tsx          # Sidebar: categories, price range, rating
-│       │   ├── FilterRangeSlider.tsx    # Dual-handle price range slider
-│       │   ├── ViewCategoryBadge.tsx    # Colored pill badge per category
-│       │   ├── ViewProductCard.tsx      # Row card used inside the virtualized list
-│       │   ├── ViewStarRating.tsx       # Star rating display (partial stars via SVG gradient)
-│       │   └── VirtualizedProductList.tsx # react-window List wrapper
-│       ├── PageProductDetail.tsx        # Single product detail page
-│       ├── PageProductList.tsx          # Main catalog page (search, filter, sort)
-│       ├── product-service.ts           # fetchProducts() + filterAndSortProducts()
-│       └── product-types.ts             # Product, ProductFilters, SortOption types & constants
+│       │   ├── ProductFilterPanel.tsx    # Sidebar: categories, price range, rating
+│       │   ├── ProductFilterRangeSlider.tsx # Dual-handle price range slider
+│       │   ├── ProductFilterSearchBar.tsx   # Search input + sort select + mobile filter toggle
+│       │   ├── ProductFilterSidebar.tsx     # Responsive sidebar wrapper for FilterPanel
+│       │   ├── ProductListContent.tsx       # Skeleton loader / virtualized list switcher
+│       │   ├── ProductListHeader.tsx        # Page heading + total count
+│       │   ├── ProductListVirtualized.tsx   # react-window List wrapper
+│       │   ├── ViewCategoryBadge.tsx        # Colored pill badge per category
+│       │   ├── ViewProductCard.tsx          # Row card used inside the virtualized list
+│       │   └── ViewStarRating.tsx           # Star rating display (partial stars via SVG gradient)
+│       ├── hooks/
+│       │   └── useProductFilters.ts         # Filter state management + URL sync + debounce
+│       ├── PageProductDetail.tsx            # Single product detail page
+│       ├── PageProductList.tsx              # Main catalog page (search, filter, sort)
+│       ├── product-service.ts               # fetchProducts() + filterAndSortProducts()
+│       └── product-types.ts                 # Product, ProductFilters, SortOption types & constants
 ├── test/
 │   ├── setup.ts
 │   ├── AuthContext.test.tsx
 │   ├── FilterPanel.test.tsx
 │   ├── PageLogin.test.tsx
+│   ├── ProductListComponents.test.tsx
 │   └── productService.test.ts
 └── utils/
-    └── utils.ts                # cn() class-name utility
+    └── utils.ts                          # cn() class-name utility
 public/
-└── products.json               # 10,000 generated products (1.85 MB)
+└── products.json                         # 10,000 generated products (1.85 MB)
 ```
 
 ## Data Schema
@@ -118,14 +125,15 @@ Each product in `public/products.json` follows this schema:
 
 ## Testing
 
-**40 tests** across 4 test files:
+**55 tests** across 5 test files:
 
-| File                     | Type        | Coverage                                                                                 |
-| ------------------------ | ----------- | ---------------------------------------------------------------------------------------- |
-| `productService.test.ts` | Unit        | Filter/sort logic: search, categories, price range, rating, sort orders, mutation safety |
-| `AuthContext.test.tsx`   | Integration | Login, logout, bad credentials, localStorage persistence, session restore                |
-| `FilterPanel.test.tsx`   | Integration | Category toggle, rating radio, clear filters, result counts                              |
-| `PageLogin.test.tsx`     | Integration | Form rendering, input change, error display, loading state                               |
+| File                             | Type        | Coverage                                                                                                                  |
+| -------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `productService.test.ts`         | Unit        | Filter/sort logic: search, categories, price range, rating, sort orders, mutation safety                                  |
+| `AuthContext.test.tsx`           | Integration | Login, logout, bad credentials, localStorage persistence, session restore                                                 |
+| `FilterPanel.test.tsx`           | Integration | Category toggle, rating radio, clear filters, result counts                                                               |
+| `PageLogin.test.tsx`             | Integration | Form rendering, input change, error display, loading state                                                                |
+| `ProductListComponents.test.tsx` | Unit        | `ProductListVirtualized` (empty state), `ProductListContent` (skeleton/list), `ProductFilterRangeSlider` (clamping, aria) |
 
 ## Production Optimizations
 
@@ -180,8 +188,6 @@ Added explicit `width={96} height={96}` to every product `<img>`. Without known 
 
 - **Architecture planning**: AI proposed the overall folder structure, component boundaries, and data flow design based on project requirements.
 - **Boilerplate generation**: AI generated the initial versions of components, hooks, and the product data generator script.
-- **react-window v2 API**: AI identified that the installed version (v2) has a breaking API change from v1 (no `FixedSizeList`, uses `List` with `rowComponent`/`rowProps`) and adapted the implementation accordingly.
-- **URL state sync**: AI designed the pattern of coercing URL string params back to typed values in `PageProductList` using the existing `useUrlState` hook.
 - **Test generation**: AI authored the full test suite (unit + integration), including identifying a fake-timer/waitFor conflict in RTL tests and applying a real-timer override to fix it.
 - **Bug fixes**: AI diagnosed a Label-Input association bug (`htmlFor`/`id` missing) found during test failures and fixed it directly in the `Input` component.
 

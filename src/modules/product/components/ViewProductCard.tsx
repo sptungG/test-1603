@@ -5,12 +5,12 @@ import type { TProduct } from "../product-types";
 import { ViewCategoryBadge } from "./ViewCategoryBadge";
 import { ViewStarRating } from "./ViewStarRating";
 
-interface ViewProductCardProps {
+interface TViewProductCardProps {
   product: TProduct;
   style?: React.CSSProperties;
 }
 
-export const ViewProductCard = memo(function ViewProductCard({ product, style }: ViewProductCardProps) {
+export const ViewProductCard = memo(function ViewProductCard({ product, style }: TViewProductCardProps) {
   return (
     <div style={style} className="">
       <Link
